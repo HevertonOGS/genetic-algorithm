@@ -12,9 +12,15 @@ typedef struct {
   int quantidade;
 } Demanda;
 
+typedef struct {
+  vector<int> itens;
+  int sobras;
+} Padrao;
+
 int tamBarra, qtdeItens;
 vector<Demanda> demandas;
 vector<vector<int>> populacao;
+vector<vector<Padrao>> populacaoPadroes;
 
 // Referência https://www.cplusplus.com/reference/random/
 int gerarAleatorio(int valorInicial, int valorFinal){
@@ -43,10 +49,10 @@ vector<int> gerarIndividuos(){
   return individuos;
 }
 
-void imprimirPopuplacao(int populacaoId){
-  cout << "População " << populacaoId << ":" << endl; 
-  for(int j= 0; j < populacao[populacaoId].size(); j++){
-    cout << populacao[populacaoId][j] << " ";
+void imprimirPopuplacao(int individuoId){
+  cout << "Indivíduo " << individuoId << ":" << endl; 
+  for(int j= 0; j < populacao[individuoId].size(); j++){
+    cout << populacao[individuoId][j] << " ";
   }
   cout << endl << endl;
 }
@@ -57,6 +63,53 @@ void gerarPopulacao(){
 
     imprimirPopuplacao(i);
   }
+}
+
+void imprimirPopuplacaoDecodificada(){
+  for(int i = 0; i < populacaoPadroes.size(); i++){
+    cout << "----------------------------------- " << endl;
+    cout << "Indivíduo " << i << ":" << endl; 
+    for(int j = 0; j < populacaoPadroes[i].size(); j++){
+      cout << "Padrão " << j << ":" << endl; 
+      cout << "Sobras: " << populacaoPadroes[i][j].sobras << endl; 
+      cout << "itens: "; 
+      for(int k = 0; k < populacaoPadroes[i][j].itens.size(); k++){
+        cout << populacaoPadroes[i][j].itens[k] << " ";
+      }
+      cout << endl << endl;
+    }
+  }
+}
+
+void decodificar(){
+  vector<vector<int>> populacaoInterna = populacao;
+
+  for(int i = 0; i < populacaoInterna.size(); i++){
+    vector<int> individuo = populacaoInterna[i];
+    vector<Padrao> individuosPadroes;
+
+    while(!individuo.empty()){
+      individuosPadroes.push_back({sobras: tamBarra});
+      int j = 0;
+
+      while(j < individuo.size()){
+        int item = individuo[j];
+
+        if(demandas[item].tamanho <= individuosPadroes[individuosPadroes.size()-1].sobras){
+          individuosPadroes[individuosPadroes.size()-1].itens.push_back(item);
+          individuosPadroes[individuosPadroes.size()-1].sobras -= demandas[item].tamanho;
+          individuo.erase(individuo.begin());
+          j--;
+        }
+
+        j++;
+      }
+    }
+
+    populacaoPadroes.push_back(individuosPadroes);
+  }
+
+  imprimirPopuplacaoDecodificada();
 }
 
 int main(){
@@ -71,5 +124,7 @@ int main(){
   }
 
   gerarPopulacao();
+  decodificar();
+
   return 0;
 }
