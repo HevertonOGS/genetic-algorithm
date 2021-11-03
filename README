@@ -1,0 +1,13 @@
+### Entrada
+
+A primeira linha da entrada contém dois inteiros M, N que representam o tamanho da barra e a quantidade de items respectivamente. Logo em seguida, haverá N linhas com dois interos Q, T que fazem fazem referência a quantidade e o tamanho de cada item da demanda. 
+
+### Como compilar
+```sh
+$ g++ nome_do_arquivo.cpp -o executavel
+```
+
+### Como executar
+```sh
+$ ./executavel < entrada.txt
+```
